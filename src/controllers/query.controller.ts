@@ -1,8 +1,9 @@
 import bot from "../lib/bot.js";
 import SearchService from "../services/search.service.js";
+import type { ControllerActionMap } from "../types/defaultController.js";
 import handleTelegramResult from "../utils/handleTelegramResult.js";
 
-const QueryController = {  
+const QueryController: ControllerActionMap = {  
     summary: function() {
         console.log(this)
     },

@@ -5,10 +5,39 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
+  engineType = "client"
 }
 
 datasource db {
   provider = "postgresql"
 }
+
+model TelegramGroup {
+  id              Int            @id @default(autoincrement())
+  telegramGroupId BigInt         @unique
+  title           String?
+  trackedStocks   TrackedStock[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([telegramGroupId])
+}
+
+model TrackedStock {
+  id              Int           @id @default(autoincrement())
+  symbol          String
+  telegramGroupId BigInt
+  threadId        Int?
+  chartMessageId   Int?
+  detailMessageId  Int?
+  group           TelegramGroup @relation(fields: [telegramGroupId], references: [telegramGroupId], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([telegramGroupId])
+  @@index([symbol])
+  @@unique([telegramGroupId, threadId, symbol])
+}
+
+

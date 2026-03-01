@@ -2,6 +2,7 @@ import yahooFinance from "../lib/yahooFinance.js"
 import type { SearchResult } from "yahoo-finance2/modules/search";
 import type { SendTextResult } from "../types/telegramResults.js";
 import telegramifyMarkdown from "telegramify-markdown";
+import type { Quote } from "yahoo-finance2/modules/quote";
 
 interface SearchByKeywordResult extends SendTextResult {
     raw: SearchResult;
@@ -12,7 +13,6 @@ const SearchService: {
     _summarizeYahooSearchResult: (data: SearchResult | null) => any;
     _yahooSummaryToText: (summary: any, markdown?: boolean) => string;
     searchByKeyword: (keyword: string) => Promise<SearchByKeywordResult>;
-    quoteBySymbol: (symbol: string) => Promise<SendTextResult>;
 } = {
     _summarizeYahooSearchResult: function (data: SearchResult | null) {
         if (!data?.quotes?.length) {
@@ -67,14 +67,14 @@ const SearchService: {
         markdown = true
     ) {
         if (markdown){
-            return telegramifyMarkdown(`
+            return `
 📈 ${summary.primary.company} (${summary.primary.symbol})
 Exchange: ${summary.primary.exchange}
 Sector: ${summary.primary.sector}
 
 📰 Latest News:
 ${summary.news.map(n => `• [${n.title}](${n.link})`).join("\n")}
-`, 'escape')
+`
         }
         return `
 📈 ${summary.primary.company} (${summary.primary.symbol})
@@ -96,16 +96,7 @@ ${summary.news.map(n => `• ${n.title} (${n.link})`).join("\n")}
             text: getSummaryText
         }
     },
-    quoteBySymbol: async (symbol: string) => {
-        const data = await yahooFinance.quote(symbol)
-        // const getQuoteText = (markdown = true) => SearchService._yahooSummaryToText(data, markdown)
-        return {
-            type: "text",
-            raw: data,
-            shouldStop: data ? false : true, // If no data returned, signal to stop further processing and suggest user to check symbol
-            text: () => `Not implemented yet. Got quote data: ${JSON.stringify(data)}`
-        }
-    }
+    
 }
 
 export default SearchService;
