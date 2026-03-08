@@ -22,7 +22,7 @@ const defaultConfiguration: ChartConfiguration = {
       }
     },
       plugins: {
-        legend: { display: true }
+        
       }
     }
 }
@@ -36,12 +36,9 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({
     globalVariableLegacy: [
       'chartjs-chart-financial', 
     ],
-    modern: [
+    requireLegacy: [
       'chartjs-adapter-date-fns'
     ]
-  },
-  chartCallback: async (ChartJS) => {
-    ChartJS.defaults.responsive = false
   }
  })
 
