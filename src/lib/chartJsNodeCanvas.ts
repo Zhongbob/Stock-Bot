@@ -37,12 +37,12 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({
   plugins: {
     globalVariableLegacy: [
       'chartjs-chart-financial',
-      "chartjs-adapter-luxon"
+      "chartjs-adapter-luxon",
+      
     ]
   },
-  chartCallback: (ChartJS) => {
-    require('chartjs-chart-financial')
-    require('chartjs-adapter-luxon')
+  chartCallback: async (ChartJS) => {
+    const adapter = await import('chartjs-adapter-luxon')
     ChartJS.defaults.responsive = false
   }
  })
