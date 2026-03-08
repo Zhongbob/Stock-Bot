@@ -16,7 +16,7 @@ const defaultConfiguration: ChartConfiguration = {
           }
         },
         time: {
-          unit: 'minute',
+          unit: 'hour',
         }
       }
     },
@@ -45,5 +45,6 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({
  })
 
 chartJSNodeCanvas.registerFont('./src/assets/Roboto.ttf', { family: 'Roboto' })
+
 export default chartJSNodeCanvas
 export {defaultConfiguration}
