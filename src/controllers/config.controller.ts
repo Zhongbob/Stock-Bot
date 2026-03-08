@@ -12,7 +12,6 @@ const ConfigController: ControllerActionMap = {
         await handleTelegramResult(result, this)
     },
     track: async function() {
-        console.log(this)
         const symbol = this.args._.join(" ")
         let result 
         if (this.args["link"]) {
