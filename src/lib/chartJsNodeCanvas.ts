@@ -1,7 +1,5 @@
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas'
 import type { ChartConfiguration, Chart } from 'chart.js'
-import { registerFont } from "canvas"
-registerFont('./src/assets/Roboto.ttf', { family: 'Roboto' })
 const defaultConfiguration: ChartConfiguration = {
     type: 'candlestick',
     options: {
@@ -40,10 +38,12 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({
     ]
   },
   chartCallback: (ChartJS) => {
-    ChartJS.defaults.font.family = "Roboto"
+    ChartJS.defaults.font.family = 'Roboto';
+    ChartJS.defaults.font.size = 16;
+    ChartJS.defaults.font.weight = 'bold';
   }
  })
 
-
+chartJSNodeCanvas.registerFont('./src/assets/Roboto.ttf', { family: 'Roboto' })
 export default chartJSNodeCanvas
 export {defaultConfiguration}
