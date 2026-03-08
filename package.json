@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Bot to give updates on certain stocks in telegram",
   "main": "index.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch src -e js,ts --exec \"npx tsx src/index.ts\"",
