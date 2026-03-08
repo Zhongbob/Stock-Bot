@@ -13,12 +13,11 @@ const defaultConfiguration: ChartConfiguration = {
         bounds: "data",
         adapters: {
           date: {
-            zone: 'utc' // optional
+            zone: 'GMT+8'
           }
         },
         time: {
-          unit: 'day',
-          tooltipFormat: 'DD T'
+          unit: 'minute',
         }
       }
     },
@@ -36,16 +35,9 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({
   plugins: {
     globalVariableLegacy: [
       'chartjs-chart-financial', 
-      "chartjs-adapter-luxon"     
-    ],
-    requireChartJSLegacy: [
-      "chartjs-adapter-luxon"     
-    ],
-    requireLegacy: [
-      "chartjs-adapter-luxon" 
     ],
     modern: [
-      "chartjs-adapter-luxon"
+      'chartjs-adapter-date-fns'
     ]
   },
   chartCallback: async (ChartJS) => {
