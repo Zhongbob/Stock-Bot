@@ -1,6 +1,7 @@
 import type { Message } from 'node-telegram-bot-api';
 import { parseArgsStringToArgv } from 'string-argv';
 import parser from 'yargs-parser';
+import errorHandler from './error.middleware.js';
 
 interface DefaultParsedContext {
   msg: Message;
@@ -61,8 +62,12 @@ function defaultParserMiddleware<TContext extends DefaultParsedContext = Default
           return;
         }
       }
-
-      await handler.call(context, message, ...extraArgs);
+      try{
+        await handler.call(context, message, ...extraArgs);
+      }
+      catch (error) {
+        errorHandler(error, context);
+      }
     };
   }) as MiddlewareFactory<TContext>;
 

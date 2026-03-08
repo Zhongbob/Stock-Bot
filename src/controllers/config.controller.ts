@@ -16,10 +16,11 @@ const ConfigController: ControllerActionMap = {
         const symbol = this.args._.join(" ")
         let result 
         if (this.args["link"]) {
-            result = await TrackService.trackStock(symbol, this.chatId, this.msg.message_thread_id)
+            result = await TrackService.trackStock(
+                symbol, { chatId: this.chatId, threadId: this.msg.message_thread_id })
         }
         else {
-            result = await TrackService.trackStock(symbol, this.chatId)
+            result = await TrackService.trackStock(symbol, { chatId: this.chatId })
         }
         await handleTelegramResult(result, this)
     }

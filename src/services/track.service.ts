@@ -1,26 +1,28 @@
-import prisma from "../lib/prisma.js";
-import TrackRepository from "../repository/track.repository.js";
 import type { CreateThreadResult, ImageResult, SendTextResult } from "../types/telegramResults.js";
 import SearchService from "./search.service.js";
 import DetailsService from "./details.service.js";
-
-const trackRepo = new TrackRepository(prisma)
+import { trackRepository } from "../repository/track.repository.js";
+import type { ChatInfo } from "../types/telegramTypes.js";
+import type { TrackedStock } from "@prisma/client";
 const TrackService: {
-    trackStock: (symbol: string, chatId: number, threadId?: number) => Promise<(CreateThreadResult | SendTextResult | ImageResult)[]>;
+    trackStock: (symbol: string, chatInfo: ChatInfo) => Promise<(CreateThreadResult | SendTextResult | ImageResult)[]>;
+    getAllTrackings: (telegramGroupId?: number) => Promise<TrackedStock[]>;
     _symbolNotFoundResult: (symbol: string) => Promise<SendTextResult>;
     _sendTrackingConfirmation: (symbol: string, threadId?: number) => SendTextResult;
     _trackExistsResult: (symbol: string) => SendTextResult;
 } = {
     _symbolNotFoundResult: async function(symbol: string): Promise<SendTextResult> {
         const searchResults = await SearchService.searchByKeyword(symbol)
-        const suggestionText = searchResults.summary.primary.symbol
-            ? `Symbol "${symbol}" not found. Did you mean "${searchResults.summary.primary.symbol}"?`
+        const suggestionText = searchResults.raw?.primary?.symbol
+            ? `Symbol "${symbol}" not found. Did you mean "${searchResults.raw.primary.symbol}"?`
             : `Symbol "${symbol}" not found and no close matches were found. Please check the symbol and try again.`
         return {
             type: "text",
+            action: "send",
             text: () => suggestionText,
             shouldStop: true
         }
+        
     },
     _sendTrackingConfirmation: function(symbol: string, threadId?: number): SendTextResult {
         const text = threadId
@@ -28,35 +30,39 @@ const TrackService: {
             : `Symbol "${symbol}" is now being tracked!`;
         return {
             type: "text",
+            action: "send",
             text: () => text
         }
     },
     _trackExistsResult: function(symbol: string): SendTextResult {
         return {
             type: "text",
+            action: "send",
             text: () => `Symbol "${symbol}" is already being tracked in this group.`
         }
     },
-    trackStock: async function(symbol: string, chatId: number, threadId?: number){
+    trackStock: async function(symbol: string, chatInfo: ChatInfo){
+        const { chatId, threadId } = chatInfo;
         // Create tracking record in database (not implemented yet)
-        const quote = await DetailsService.getStockQuote(symbol) // Verify Symbol Exists
+
+        const quote = await DetailsService.getStockQuote(symbol, chatInfo) // Verify Symbol Exists
         // For now, just return a successful thread creation result
         if (quote.shouldStop) {
             // If quote lookup failed, stop further processing and suggest user to check symbol
             return [await TrackService._symbolNotFoundResult(symbol)]
         }
         
-        const existingTracking = await trackRepo.findBySymbol(chatId, symbol)
+        const existingTracking = await trackRepository.findBySymbol(chatId, symbol)
         if (existingTracking.length && !threadId) {
             // Only create tracking record if the symbol has not been tracked before, 
             // Otherwise just update the threadId for the existing record (to handle the case when user tries to track a symbol that's already being tracked but without providing threadId)
             return [TrackService._trackExistsResult(symbol)]
         }
         
-        const chart = await DetailsService.getStockChart(symbol)
+        const chart = await DetailsService.getStockChart(symbol, undefined, chatInfo) // Get chart with onSent handler to update tracking record with chartTrackingId once sent
 
         if (threadId) {
-            await trackRepo.create(chatId, symbol, threadId);
+            await trackRepository.create(chatId, symbol, threadId);
             // If threadId is provided, means no need to create new thread, just update the tracking record with the threadId
             return [TrackService._sendTrackingConfirmation(symbol, threadId), quote,chart];
         }
@@ -66,11 +72,13 @@ const TrackService: {
         
         
         const onThreadCreate = async (threadId: number) => {
-            await trackRepo.create(chatId, symbol, threadId);
+            console.log("Thread created with id", threadId, "for symbol", symbol, "in chat", chatId)
+            await trackRepository.create(chatId, symbol, threadId);
         }
         return [
             {
                 type: "createThread",
+                action: "misc",
                 threadName: `${symbol}`,
                 shouldStop: false, 
                 onThreadCreated: onThreadCreate,
@@ -79,9 +87,10 @@ const TrackService: {
             TrackService._sendTrackingConfirmation(symbol),
             quote,
             chart,
-        ]
-    
-        
+        ]     
+    },
+    getAllTrackings: async (telegramGroupId?: number) => {
+        return await trackRepository.findAll(telegramGroupId);
     }
 }
 

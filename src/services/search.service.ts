@@ -91,6 +91,7 @@ ${summary.news.map(n => `• ${n.title} (${n.link})`).join("\n")}
         const getSummaryText = (markdown = true) => SearchService._yahooSummaryToText(summary, markdown)
         return {
             type: "text",
+            action: "send",
             raw: data,
             summary,
             text: getSummaryText

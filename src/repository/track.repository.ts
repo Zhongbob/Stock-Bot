@@ -1,3 +1,5 @@
+import prisma from "../lib/prisma.js";
+import type { ChatInfo } from "../types/telegramTypes.js";
 import BaseRepository from "./base.repository.js";
 
 class TrackRepository extends BaseRepository {
@@ -36,21 +38,20 @@ class TrackRepository extends BaseRepository {
                 }            
             });
         }
-        return await this.tx.trackedStock.delete({
+        return await this.tx.trackedStock.deleteMany({
             where: {
-                telegramGroupId_symbol: {
-                    telegramGroupId: chatId,
-                    symbol: symbolOrThreadId.symbol
-                }
+                telegramGroupId: chatId,
+                symbol: symbolOrThreadId.symbol
             }
         });
     }
-    async updateThreadId(chatId: number, symbol: string, threadId: number) {
+    async updateThreadId(chatId: number, symbol: string, oldThreadId: number, threadId: number) {
         return await this.tx.trackedStock.update({
             where: {
-                telegramGroupId_symbol: {
+                telegramGroupId_threadId_symbol: {
                     telegramGroupId: chatId,
-                    symbol
+                    symbol: symbol,
+                    threadId: oldThreadId
                 }
             },
             data: {
@@ -58,5 +59,38 @@ class TrackRepository extends BaseRepository {
             }
         });
     }
+    async updateTrackingId(type: "detail"|"chart", symbol: string, chatInfo: ChatInfo, trackingId: number) {
+        const { chatId, threadId } = chatInfo;
+        if (type != "detail" && type !== "chart") {
+            throw new Error("Invalid type");
+        }
+        const fieldToUpdate = type === "detail" ? "detailMessageId" : "chartMessageId";
+        return await this.tx.trackedStock.update({
+            where: {
+                telegramGroupId_threadId_symbol: {
+                    telegramGroupId: chatId,
+                    symbol: symbol,
+                    threadId: threadId ?? -1
+                }
+            },
+            data: {
+                [fieldToUpdate]: trackingId
+            }
+        });
+    }
+    async findAll(telegramGroupId?: number) {
+        return await this.tx.trackedStock.findMany({
+            ...(
+                telegramGroupId && {
+                    where: {
+                        telegramGroupId
+                    }
+                }
+            )
+        });
+    }
 }
+const trackRepository = new TrackRepository(prisma);
+
 export default TrackRepository;
+export {trackRepository}
