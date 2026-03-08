@@ -1,5 +1,5 @@
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas'
-import type { ChartConfiguration } from 'chart.js'
+import type { ChartConfiguration, Chart } from 'chart.js'
 
 const defaultConfiguration: ChartConfiguration = {
     type: 'candlestick',
@@ -35,8 +35,6 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({
   plugins: {
     globalVariableLegacy: [
       'chartjs-chart-financial', 
-    ],
-    requireLegacy: [
       'chartjs-adapter-date-fns'
     ]
   }
