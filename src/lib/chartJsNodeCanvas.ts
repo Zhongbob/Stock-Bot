@@ -1,5 +1,4 @@
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas'
-import "chartjs-adapter-luxon"
 import type { ChartConfiguration } from 'chart.js'
 
 const defaultConfiguration: ChartConfiguration = {
@@ -36,7 +35,11 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({
   height,
   plugins: {
     globalVariableLegacy: [
-      'chartjs-chart-financial',      
+      'chartjs-chart-financial', 
+      "chartjs-adapter-luxon"     
+    ],
+    requireLegacy: [
+      "chartjs-adapter-luxon" 
     ],
     modern: [
       "chartjs-adapter-luxon"
