@@ -1,5 +1,4 @@
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas'
-import "chartjs-chart-financial"
 import "chartjs-adapter-luxon"
 import type { ChartConfiguration } from 'chart.js'
 import {
