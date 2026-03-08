@@ -1,6 +1,7 @@
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas'
 import type { ChartConfiguration, Chart } from 'chart.js'
-
+import { registerFont } from "canvas"
+registerFont('../assets/Roboto.ttf', { family: 'Roboto' })
 const defaultConfiguration: ChartConfiguration = {
     type: 'candlestick',
     options: {
@@ -37,6 +38,9 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({
       'chartjs-chart-financial', 
       'chartjs-adapter-date-fns'
     ]
+  },
+  chartCallback: (ChartJS) => {
+    ChartJS.defaults.font.family = "Roboto"
   }
  })
 
