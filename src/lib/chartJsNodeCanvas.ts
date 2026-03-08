@@ -41,6 +41,8 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({
     ]
   },
   chartCallback: (ChartJS) => {
+    require('chartjs-chart-financial')
+    require('chartjs-adapter-luxon')
     ChartJS.defaults.responsive = false
   }
  })
