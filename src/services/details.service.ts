@@ -1,5 +1,4 @@
 import type { Quote } from "yahoo-finance2/modules/quote";
-import "chartjs-adapter-luxon"
 import yahooFinance from "../lib/yahooFinance.js"
 import type { ImageResult, SendTextResult } from "../types/telegramResults.js"
 import type { ChartOptionsWithReturnArray, ChartResultArray } from "yahoo-finance2/modules/chart";

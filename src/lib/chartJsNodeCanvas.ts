@@ -38,6 +38,9 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({
       'chartjs-chart-financial', 
       "chartjs-adapter-luxon"     
     ],
+    requireChartJSLegacy: [
+      "chartjs-adapter-luxon"     
+    ],
     requireLegacy: [
       "chartjs-adapter-luxon" 
     ],
