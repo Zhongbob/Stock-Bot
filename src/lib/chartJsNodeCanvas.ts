@@ -1,9 +1,6 @@
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas'
 import "chartjs-adapter-luxon"
 import type { ChartConfiguration } from 'chart.js'
-import {
-  registerables
-} from "chart.js"
 
 const defaultConfiguration: ChartConfiguration = {
     type: 'candlestick',
@@ -39,14 +36,13 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({
   height,
   plugins: {
     globalVariableLegacy: [
-      'chartjs-chart-financial',
-      "chartjs-adapter-luxon",
-      
+      'chartjs-chart-financial',      
+    ],
+    modern: [
+      "chartjs-adapter-luxon"
     ]
   },
   chartCallback: async (ChartJS) => {
-    ChartJS.register(...registerables)
-    const adapter = await import('chartjs-adapter-luxon')
     ChartJS.defaults.responsive = false
   }
  })
