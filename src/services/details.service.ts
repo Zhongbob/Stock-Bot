@@ -1,13 +1,14 @@
 import type { Quote } from "yahoo-finance2/modules/quote";
+import "chartjs-adapter-luxon"
 import yahooFinance from "../lib/yahooFinance.js"
 import type { ImageResult, SendTextResult } from "../types/telegramResults.js"
 import type { ChartOptionsWithReturnArray, ChartResultArray } from "yahoo-finance2/modules/chart";
 import chartJSNodeCanvas, {defaultConfiguration} from "../lib/chartJsNodeCanvas.js"
-import fs from "fs"
 import type { ChartConfiguration } from "chart.js";
 import { trackRepository } from "../repository/track.repository.js";
 import type { ChatInfo } from "../types/telegramTypes.js";
 import type { Message } from "node-telegram-bot-api";
+
 
 const DetailsService: {
     getStockChart: (symbol: string,
