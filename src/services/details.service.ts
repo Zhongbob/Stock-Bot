@@ -90,7 +90,6 @@ Volume: ${safeInt(data.regularMarketVolume)}
                     x: {
                         ...defaultConfiguration.options?.scales?.x,
                         max: endDate.valueOf(),
-                        min: startDate.valueOf()
                     }
                 }
             },
