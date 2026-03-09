@@ -97,7 +97,7 @@ Volume: ${safeInt(data.regularMarketVolume)}
                 datasets: [{
                     label: `${symbol} Price`,
                     data: data.quotes.map(point => ({
-                        x: point.date,
+                        x: point.date.valueOf(),
                         o: point.open,
                         h: point.close,
                         l: point.open,
