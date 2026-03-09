@@ -18,7 +18,7 @@ const DetailsService: {
     }, sendTo?: ChatInfo) => Promise<ImageResult|SendTextResult>;
     getStockQuote: (symbol: string, sendTo?: ChatInfo) => Promise<SendTextResult>;
     _formatYahooQuoteMarkdown: (data: Quote) => string;
-    _createChart: (symbol: string, data: ChartResultArray, endDate?: Date) => Promise<Buffer>;
+    _createChart: (symbol: string, data: ChartResultArray, endDate?: Date, startDate?: Date) => Promise<Buffer>;
     _createOnSentMessageHandler: (type: "detail"|"chart", symbol: string) => (message: Message) => Promise<void>;
 } = {
     /**
@@ -77,7 +77,7 @@ Prev Close: ${safe(data.regularMarketPreviousClose)}
 Volume: ${safeInt(data.regularMarketVolume)}
 `.trim()
 },
-    _createChart: async function (symbol: string, data: ChartResultArray, endDate: Date = new Date()): Promise<Buffer> {
+    _createChart: async function (symbol: string, data: ChartResultArray, endDate: Date = new Date(), startDate: Date = new Date()): Promise<Buffer> {
         data.quotes = data.quotes.filter(quote => quote.open !== null 
             && quote.close !== null
             && quote.date)
@@ -89,7 +89,8 @@ Volume: ${safeInt(data.regularMarketVolume)}
                     ...defaultConfiguration.options?.scales,
                     x: {
                         ...defaultConfiguration.options?.scales?.x,
-                        max: endDate.valueOf()
+                        max: endDate.valueOf(),
+                        min: startDate.valueOf()
                     }
                 }
             },
@@ -175,8 +176,9 @@ Volume: ${safeInt(data.regularMarketVolume)}
             }
         }
         const endOfDay = new Date(range.endDate).setHours(23, 59, 59, 999)
+        
         const suggestionText = `Here is the stock chart for ${symbol} from ${new Date(options.period1).toLocaleString()} to ${new Date(options.period2!).toLocaleString()}.`
-        const buffer = await DetailsService._createChart(symbol, result, new Date(endOfDay))
+        const buffer = await DetailsService._createChart(symbol, result, new Date(endOfDay), range.startDate)
         return {
             type: "image",
             action: "send",
