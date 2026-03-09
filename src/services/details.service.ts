@@ -141,11 +141,12 @@ Volume: ${safeInt(data.regularMarketVolume)}
     }, sendTo?: {chatId: number, threadId?: number | undefined}) => {
         if (!range) {
             const stockDetails = await DetailsService.getStockQuote(symbol)
-            const postMarketTime = stockDetails.data?.postMarketTime ?? new Date()
-            const startOfDay = new Date(postMarketTime).setHours(0, 0, 0, 0)
+            const now = new Date()
+            const startOfDay = new Date()
+            startOfDay.setHours(0, 0, 0, 0)
             range = {
-                startDate: new Date(startOfDay), 
-                endDate: postMarketTime,
+                startDate: startOfDay, 
+                endDate: now,
                 interval: "5m"
             }
         }
