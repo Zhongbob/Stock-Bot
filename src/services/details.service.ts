@@ -78,7 +78,9 @@ Volume: ${safeInt(data.regularMarketVolume)}
 `.trim()
 },
     _createChart: async function (symbol: string, data: ChartResultArray, endDate: Date = new Date()): Promise<Buffer> {
-        data.quotes = data.quotes.filter(quote => quote.open !== null && quote.close !== null)
+        data.quotes = data.quotes.filter(quote => quote.open !== null 
+            && quote.close !== null
+            && quote.date !== null)
         const configuration: ChartConfiguration = { 
             ...defaultConfiguration,
             options: {
