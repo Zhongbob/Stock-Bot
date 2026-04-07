@@ -1,0 +1,6 @@
+run_tests:
+  image: node:24.14.1
+  script: 
+    - npm install
+    - npm test
+  
