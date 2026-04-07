@@ -4,7 +4,7 @@ import type { SendTextResult } from "../types/telegramResults.js";
 import telegramifyMarkdown from "telegramify-markdown";
 import type { Quote } from "yahoo-finance2/modules/quote";
 
-interface SearchByKeywordResult extends SendTextResult {
+export type SearchByKeywordResult = SendTextResult & {
     raw: SearchResult;
     summary: ReturnType<typeof SearchService._summarizeYahooSearchResult>;
 }

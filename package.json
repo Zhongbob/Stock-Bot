@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "dev": "nodemon --watch src -e js,ts --exec \"npx tsx src/index.ts\"",
     "build": "npx prisma generate",
     "start": "npx tsx src/index.ts"
@@ -18,7 +18,8 @@
     "@types/tgfancy": "^0.13.6",
     "@types/yargs-parser": "^21.0.3",
     "prisma": "^7.4.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.2"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.2",
