@@ -1,0 +1,10 @@
+name: CI testing
+on: [push] # Trigger on every push
+jobs:
+  Test:
+    runs-on: ubuntu-latest # The environment to run in
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4 # Standard action to clone your repo
+      - name: Run a script
+        run: npm install && npm test # Install dependencies and run tests
